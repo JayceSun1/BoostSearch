@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+  <title>Boost 搜索引擎</title>
+  <style>
+    /* 去掉网页中所有的默认内外边距，html的盒子模型 */
+    * {
+      /* 设置外边距 */
+      margin:0;
+      /* 设置内边距 */
+      padding:0;
+    }
+    /* 将body内的内容100%和html的呈现吻合 */
+    html,
+    body{
+      height:100%;
+    }
+    /* 类选择器 */
+    .container {
+      /* 设置div的宽度 */
+      width: 800px;
+      /* 通过设置外边距达到居中对齐的目的 */
+      margin: 0px auto;
+      /* 设置外边距的上边距，保持元素和网页的上部距离 */
+      margin-top:15px;
+    }
+    /* 复合选择器，选择container下的search */
+    .container .search{
+      /* 宽度与父标签保持一致 */
+      width: 100%;
+      /* 高度设置为52px */
+      height: 52px;
+    }
+    /* 先选中input标签，直接设置标签的属性，先要选中，input：标签选择器 */
+    .container .search input{
+      /* 设置left浮动 */
+      float: left;
+      width: 600px;
+      height: 50px;
+      /* 设置边框属性：宽度，样式，颜色 */
+      border: 1px solid black;
+      /* 去掉input输入框的右边框 */
+      border-right: none;
+      /* 设置内边距，默认文字不要和左侧边距紧挨着 */
+      padding-left: 10px;
+      /* 设置文字样式 */
+      color: #CCC;
+      font-size: 15px;
+    }
+    /* 先选中button标签，直接设置标签的属性，先要选中，button：标签选择器 */
+    .container .search button {
+      /* 设置left浮动 */
+      float: left;
+      width: 120px;
+      height: 50px;
+      border: 1px #4e6ef2;
+      /* 设置button颜色 */
+      background-color: #4e6ef2;
+      /* 设置button中的字体颜色 */
+      color: #FFF;
+      font-size: 17px;
+      font-family:'Courier New', Courier, monospace;
+    }
+    .container .results {
+      width: 100%;
+    }
+    .container .results .item {
+      margin-top: 15px;
+    }
+    .container .results .item a {
+      /* 设置为块级元素，单独占一行 */
+      display: block;
+      text-decoration: none;
+      /* 设置a标签中的文字字体大小 */
+      font-size: 20px;
+      /* 设置字体的颜色 */
+      color: #0726a1;
+    }
+    .container .results .item a:hover {
+      /* 设置鼠标放在a之上的动态效果 */
+      text-decoration: underline;
+    }
+    .container .results .item p {
+      margin-top:5px;
+      font-size: 16px;
+    }
+    .container .results .item i {
+      /* 设置为块级元素，单独占一行 */
+      display: block;
+      /* 取消斜体风格 */
+      /* font-style: normal; */
+      color: rgb(80, 108, 80);
+    }
+
+  </style>
+</head>
+
+<body>
+  
+  <div class="container">
+    <div class="search">
+      <input type="text" value="输入关键字">
+      <button onclick="Search()">搜索</button>
+    </div>
+    <div class="results">
+      <!-- 动态生成网页内容 -->
+      <!-- <div class="item">
+        <a href="#">这是标题</a>
+        <p>这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要</p>
+        <i>www.baidu.com</i>
+      </div>
+      <div class="item">
+        <a href="#">这是标题</a>
+        <p>这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要</p>
+        <i>www.baidu.com</i>
+      </div>
+      <div class="item">
+        <a href="#">这是标题</a>
+        <p>这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要</p>
+        <i>www.baidu.com</i>
+      </div>
+      <div class="item">
+        <a href="#">这是标题</a>
+        <p>这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要</p>
+        <i>www.baidu.com</i>
+      </div>
+      <div class="item">
+        <a href="#">这是标题</a>
+        <p>这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要这是摘要</p>
+        <i>www.baidu.com</i>
+      </div> -->
+    </div>
+  </div>
+  <script>
+    function Search()
+    {
+      // 浏览器的弹出框
+      // alert("hello js!");
+      // 1.提取数据，$可以看作是JQuery的别称
+      // JQuery cdn
+      let query = $(".container .search input").val();
+      if (query == '' || query == null)
+      {
+        return;
+      }
+      console.log("query = " + query); //console是浏览器的对话框，可以查看js的数据
+
+      //2.发起http请求,ajax:属于一个和后端进行数据交互的函数，JQuery中的
+      $.ajax({
+        type: "GET",
+        url: "/s?word="+query,
+        success:function(data)
+        {
+          console.log(data);
+          BuildHtml(data);
+        }
+      });
+    }
+    function BuildHtml(data)
+    {
+      if (data == '' || data == null)
+      {
+        document.write("没有搜索的内容");
+        return;
+      }
+      // 获取html中results标签
+      let results_lable = $(".container .results");
+      // 清空历史搜索结果
+      results_lable.empty();
+
+      for (let elem of data)
+      {
+        // console.log(elem.title);
+        // console.log(elem.url);
+        let a_lable = $("<a>", {
+          text: elem.title,
+          href: elem.url,
+          // 跳转到新的页面
+          target: "_blank"
+        });
+        let p_lable = $("<p>", {
+          text: elem.desc
+        });
+        let i_lable = $("<i>", {
+          text: elem.url
+        });
+
+        let div_lable = $("<div>", {
+          class: "item"
+        });
+        a_lable.appendTo(div_lable);
+        p_lable.appendTo(div_lable);
+        i_lable.appendTo(div_lable);
+        div_lable.appendTo(results_lable);
+      }
+    }
+  </script>
+</body>
+
+</html>
